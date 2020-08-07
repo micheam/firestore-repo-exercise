@@ -20,7 +20,7 @@ type Meta struct {
 // Task ...
 type Task struct {
 	Meta
-	ID   string `firestore:"-" firestore_key:""`
+	ID   string `firestore:"-" firestore_key:"auto"`
 	Desc string `firestore:"description"`
 	Done bool   `firestore:"done"`
 }
