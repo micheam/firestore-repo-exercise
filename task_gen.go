@@ -329,12 +329,15 @@ func (repo *taskRepository) Insert(ctx context.Context, subject *Task) (string, 
 	if err != nil {
 		return "", xerrors.Errorf("before insert error: %w", err)
 	}
-	ref, _, err := repo.GetCollection().Add(ctx, subject)
-	if err != nil {
-		return "", xerrors.Errorf("error in Add method: %w", err)
+	ref := repo.GetCollection().Doc(subject.ID)
+
+	if _, err := ref.Get(ctx); err == nil {
+		return "", ErrAlreadyExists
 	}
 
-	subject.ID = ref.ID
+	if _, err := ref.Set(ctx, subject); err != nil {
+		return "", xerrors.Errorf("error in Set method: %w", err)
+	}
 
 	return ref.ID, nil
 }
